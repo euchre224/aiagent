@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from google import genai
 import argparse
+from google.genai import types
 
 
 
@@ -18,8 +19,10 @@ def main():
     parser = argparse.ArgumentParser(description="Chatbot")
     parser.add_argument("user_prompt", type=str, help="User prompt")
     args = parser.parse_args()
-    contentstext = args.user_prompt
+    messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
     # contentstext = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
+    # contentstext = args.user_prompt
+    contentstext = messages
     response = client.models.generate_content(model=modeltext, contents=contentstext)
     if response.usage_metadata == None:
         raise RuntimeError("client.models.generate_content.usage_metadata is None.")
