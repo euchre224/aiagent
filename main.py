@@ -18,6 +18,7 @@ def main():
     modeltext= "gemini-2.5-flash"
     parser = argparse.ArgumentParser(description="Chatbot")
     parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
     messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
     # contentstext = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
@@ -28,7 +29,8 @@ def main():
         raise RuntimeError("client.models.generate_content.usage_metadata is None.")
     p_tokens = response.usage_metadata.prompt_token_count
     r_tokens = response.usage_metadata.candidates_token_count
-    print(f"Prompt tokens: {p_tokens}\nResponse tokens: {r_tokens}")
+    if args.verbose:
+        print(f"User prompt: {args.user_prompt}\nPrompt tokens: {p_tokens}\nResponse tokens: {r_tokens}")
     print(response.text)
     
 
