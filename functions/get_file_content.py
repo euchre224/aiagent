@@ -7,7 +7,7 @@ def get_file_content(working_directory, file_path):
         working_dir_abs = os.path.abspath(working_directory)
         # print(working_dir_abs)
         target_file = os.path.normpath(os.path.join(working_dir_abs, file_path))
-        print(target_file)
+        # print(target_file)
 
         # Will be True or False
         valid_target_file = os.path.commonpath([working_dir_abs, target_file]) == working_dir_abs
