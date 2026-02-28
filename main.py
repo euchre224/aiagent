@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from google import genai
 import argparse
 from google.genai import types
-# from functions.call_function import available_functions
+from functions.call_function import available_functions
 from prompts import system_prompt
 
 def main():
@@ -24,14 +24,19 @@ def main():
     # contentstext = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
     # contentstext = args.user_prompt
     contentstext = messages
-    response = client.models.generate_content(model=modeltext, contents=contentstext, config=types.GenerateContentConfig(system_instruction=system_prompt, temperature=0))
+    response = client.models.generate_content(model=modeltext, contents=contentstext, config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt, temperature=0))
     if response.usage_metadata == None:
         raise RuntimeError("client.models.generate_content.usage_metadata is None.")
     p_tokens = response.usage_metadata.prompt_token_count
     r_tokens = response.usage_metadata.candidates_token_count
     if args.verbose:
         print(f"User prompt: {args.user_prompt}\nPrompt tokens: {p_tokens}\nResponse tokens: {r_tokens}")
-    print(response.text)
+    
+    if not len(response.function_calls) == 0:
+        for function_call in response.function_calls:
+            print(f"Calling function: {function_call.name}({function_call.args})")
+    else:
+        print(response.text)
     
 
 
