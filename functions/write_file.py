@@ -2,7 +2,7 @@ import os
 from google.genai import types
 
 schema_write_file = types.FunctionDeclaration(
-    name="run_write_file",
+    name="write_file",
     description="Writes text to a file.",
     parameters=types.Schema(
         type=types.Type.OBJECT,

@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from google import genai
 import argparse
 from google.genai import types
-from functions.call_function import available_functions
+from functions.call_function import *
 from prompts import system_prompt
 
 def main():
@@ -32,9 +32,23 @@ def main():
     if args.verbose:
         print(f"User prompt: {args.user_prompt}\nPrompt tokens: {p_tokens}\nResponse tokens: {r_tokens}")
     
+    function_results = []
+
     if not len(response.function_calls) == 0:
         for function_call in response.function_calls:
             print(f"Calling function: {function_call.name}({function_call.args})")
+            function_call_result = call_function(function_call)
+            if function_call_result.parts == None:
+                raise Exception("Nothing in the call_function.parts list.")
+            
+            if len(function_call_result.parts[0].function_response.response) == 0:
+                raise Exception("No function here, boss.")
+            
+            if args.verbose:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
+            
+            function_results.append(function_call_result.parts[0])
+
     else:
         print(response.text)
     
